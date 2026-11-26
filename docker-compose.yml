@@ -1,0 +1,49 @@
+# Base de datos MySQL con almacenamiento persistente e inicialización automática.
+services:
+  db:
+    image: mysql:8.4
+    container_name: miflix-db
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./db/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping --host=127.0.0.1 --user=root --password=\"$${MYSQL_ROOT_PASSWORD}\" --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    restart: unless-stopped
+    networks:
+      - backend
+
+  # Interfaz web de administración, publicada en el puerto indicado en .env.
+  adminer:
+    image: adminer
+    container_name: miflix-adminer
+    ports:
+      - "${ADMINER_PORT}:8080"
+    environment:
+      ADMINER_DEFAULT_SERVER: db
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - backend
+      - frontend
+
+# backend aísla los servicios; frontend permite publicar Adminer al host.
+networks:
+  backend:
+    internal: true
+  frontend:
+    driver: bridge
+
+# Volumen nombrado para conservar los datos entre reinicios.
+volumes:
+  db_data:
