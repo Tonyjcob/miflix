@@ -1,0 +1,10 @@
+target/
+.git/
+.idea/
+.junie/
+media-demo/
+docs/
+.env
+*.mp4
+*.mkv
+*.webm
