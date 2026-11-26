@@ -1,0 +1,24 @@
+# Maven
+target/
+
+# IntelliJ
+.idea/
+*.iml
+out/
+
+# Secretos
+.env
+
+# Vídeos y medios (nunca al repo)
+media-demo/
+media/
+*.mp4
+*.mkv
+*.webm
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# VS Code
+.vscode/
