@@ -491,3 +491,42 @@ usuario, `ui.js` reúne toasts, skeletons y estados, y `sesion.js` gestiona el p
   reanudación, error claro con la BD caída y reintento, diseño responsive, consola sin errores.]
 
 **Commit:** `feat(frontend): selección de perfil, catálogo, detalle y reproductor con progreso`
+
+---
+
+### Fase 8B · Panel de administración — 27/11/2026
+
+**Prompt dado a Junie:** panel `admin.html` con CRUD de Películas, Géneros, Directores y Perfiles
+reutilizando `api.js`, `ui.js` y las reglas de seguridad de la Fase 8A. Formularios en `<dialog>`
+modales, con validación en el cliente que refleja la del servidor pero mostrando siempre el mensaje
+del servidor ante 400/409; confirmación de borrado propia que explica las consecuencias; botón
+desactivado durante el envío para evitar dobles envíos. Además, un endpoint `GET /api/medios/videos`
+para elegir el archivo de vídeo de un desplegable en lugar de escribir la ruta.
+
+**Qué generó Junie:**
+- **Backend:** `MedioResource` → `MedioService` → `AlmacenMedios` + `PeliculaDAO`, `MedioVideoDTO`
+  con el indicador "registrado", y tests (Mockito + `@TempDir`).
+- **Frontend:** `admin.html`, `admin.js` (pestañas, tablas, borrado) y `admin-formularios.js`
+  (diálogos y validación), con ampliaciones de `api.js` y `estilos.css`.
+
+**Decisiones:**
+- **Validación en dos niveles:** la del cliente mejora la experiencia (respuesta inmediata), pero la
+  que manda es la del servidor. El panel siempre muestra el `mensaje` del `ErrorDTO` cuando la API
+  rechaza una operación.
+- **Confirmaciones que explican las consecuencias** de cada borrado según las reglas de integridad
+  de la BD (SET NULL en directores, CASCADE en perfiles, RESTRICT en géneros).
+- **Selector de vídeos:** pensado para el uso real de la plataforma. Al copiar películas nuevas a la
+  carpeta de medios, aparecen en el desplegable y se distinguen las ya registradas.
+
+**Revisión:**
+- ✅ Sin `innerHTML`/`outerHTML`; solo `api.js` hace `fetch`; los módulos nuevos pasan `node --check`.
+- ✅ El listado de vídeos reutiliza la protección de rutas de `AlmacenMedios`.
+
+**Verificación:**
+- `mvn test` → 175 tests, 0 fallos.
+- Docker: `admin.html` y sus módulos 200; `/api/medios/videos` devuelve el vídeo de prueba marcado
+  como registrado; las cuatro colecciones 200.
+- Prueba manual: [CRUD en las cuatro pestañas, mensajes 409 del servidor visibles, confirmaciones de
+  borrado, límite de perfiles, sin doble envío, diseño en móvil y consola sin errores.]
+
+**Commit:** `feat(admin): panel de administración con CRUD de las cuatro entidades y selector de vídeos`
