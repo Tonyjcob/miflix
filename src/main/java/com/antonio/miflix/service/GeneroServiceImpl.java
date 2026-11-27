@@ -67,8 +67,11 @@ public class GeneroServiceImpl implements GeneroService {
         Genero genero = obtenerPorId(id);
         int totalPeliculas = generoDAO.contarPeliculas(id);
         if (totalPeliculas > 0) {
+            String peliculas = totalPeliculas == 1
+                    ? "1 película asociada"
+                    : totalPeliculas + " películas asociadas";
             throw new ConflictoException("No se puede eliminar el género " + genero.getNombre()
-                    + " porque tiene " + totalPeliculas + " películas asociadas.");
+                    + " porque tiene " + peliculas + ".");
         }
         try {
             if (!generoDAO.eliminar(id)) {
