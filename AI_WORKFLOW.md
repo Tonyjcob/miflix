@@ -399,3 +399,64 @@ construcción de la imagen porque Docker Desktop no estaba arrancado: solo valid
 - Archivo temporal de prueba eliminado y BD restaurada a los datos semilla.
 
 **Commit:** `feat(peliculas): CRUD de películas con transacciones, relación N:M con géneros y validación de archivos`
+
+---
+
+### Fase 7 · Progreso, streaming con HTTP Range y pósters — 27/11/2026
+
+**Cambio de alcance previo:** se eliminó el filtro de contenido infantil (ver Decisiones de
+arquitectura). La regla se quitó de las guidelines antes de lanzar el prompt para que el agente no
+la implementara por su cuenta.
+
+**Prompt dado a Junie:**
+
+<details>
+<summary>Ver prompt completo</summary>
+
+> Tarea (Fase 7): progreso de visualización, streaming de vídeo y pósters.
+> - Progreso: PUT con upsert (INSERT … ON DUPLICATE KEY UPDATE), validación 0 ≤ segundo ≤ duración,
+    >   completada al 90 %; GET con segundo 0 si no existe; GET continuar-viendo (no completadas, más
+    >   recientes primero).
+> - Streaming: GET /api/stream/{id} con Range (200 sin Range, 206 con Content-Range, 416 fuera de
+    >   límites), lectura por bloques de 64 KB con StreamingOutput, ruta resuelta con AlmacenMedios, y
+    >   parser de Range en una clase propia con tests.
+> - Pósters: GET /api/posters/{id} con Content-Type por extensión y Cache-Control de 24 h.
+> - Verificación obligatoria en Docker con tabla esperado/obtenido.
+
+</details>
+
+**Qué generó Junie:**
+- **Progreso:** modelo, proyección `ProgresoContinuarViendoResumen`, DTOs, mapper, `ProgresoDAO` /
+  `JdbcProgresoDAO`, servicio y `ProgresoResource`.
+- **Streaming:** `RangoBytes` y `ParserRango` (parseo de la cabecera), `StreamService` /
+  `StreamServiceImpl` y `StreamResource`.
+- **Pósters:** `PosterService` / `PosterServiceImpl` y `PosterResource`.
+- `AlmacenMedios` ampliado para devolver la ruta segura (`Path`) dentro de `MEDIA_PATH`.
+
+**Decisiones técnicas:**
+- **Upsert** del progreso con `INSERT … ON DUPLICATE KEY UPDATE`: una sola sentencia atómica en vez
+  de comprobar si existe y luego decidir entre INSERT o UPDATE.
+- **Streaming por bloques de 64 KB** con `StreamingOutput`: el archivo nunca se carga entero en
+  memoria, así que se pueden servir películas de varios GB.
+- **Range malformado → 200 con el archivo completo**, como permite la especificación HTTP (RFC 9110):
+  una cabecera Range no válida se puede ignorar.
+- Pósters con `Cache-Control: max-age=86400`: el navegador no vuelve a pedir la imagen durante 24 h.
+
+**Incidencias durante la tarea:**
+- La primera ejecución de `mvn test` falló con 6 errores de Mockito por *stubs* innecesarios
+  (`UnnecessaryStubbingException`). El agente lo reportó y ajustó el alcance de los fixtures sin
+  relajar las aserciones.
+- ⚠️ Para la verificación, el agente creó un archivo temporal de 1 MB con el nombre
+  `big-buck-bunny.mp4` en `media-demo/` y lo borró al terminar, con riesgo de sobrescribir o eliminar
+  un vídeo real del usuario. **Corrección:** se añadió a las guidelines la prohibición de modificar
+  archivos existentes en `media-demo/` y la obligación de usar el prefijo `prueba-junie-` para los
+  archivos temporales. [Indica si el vídeo real se perdió y tuviste que descargarlo de nuevo.]
+
+**Verificación:**
+- `mvn test` → **173 tests, 0 fallos**.
+- Docker: **19 comprobaciones OK**: ciclo completo de progreso (inicial 0 → 150 s → continuar
+  viendo → 95 % completada → excluida), validaciones 400, inexistentes 404, stream 200/206/416/404 con
+  todas las variantes de Range, y póster 200 (caché 24 h) / 404.
+- Prueba manual en el navegador: el vídeo se reproduce y permite saltar a cualquier punto al instante.
+
+**Commit:** `feat(streaming): progreso de visualización, streaming con HTTP Range y pósters`
