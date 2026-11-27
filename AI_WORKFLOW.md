@@ -460,3 +460,34 @@ la implementara por su cuenta.
 - Prueba manual en el navegador: el vídeo se reproduce y permite saltar a cualquier punto al instante.
 
 **Commit:** `feat(streaming): progreso de visualización, streaming con HTTP Range y pósters`
+
+---
+
+### Fase 8A · Frontend de usuario — 27/11/2026
+
+**Prompt dado a Junie:** frontend de usuario en HTML5 semántico, CSS3 y JavaScript vanilla (ES
+modules, fetch) sin frameworks ni recursos externos: selección de perfil, catálogo con búsqueda
+(debounce de 300 ms) y filtro por género, fila "Continuar viendo", detalle y reproductor con
+reanudación y guardado del progreso cada 10 s, al pausar y al salir (`fetch` con `keepalive`).
+Requisitos explícitos: identidad visual propia, skeletons, estados vacío y de error con reintento,
+accesibilidad y protección contra XSS.
+
+**Qué generó Junie:** 4 páginas HTML, `favicon.svg`, `estilos.css` (con variables CSS) y 7 módulos
+JS. `api.js` centraliza las llamadas y convierte el `ErrorDTO` del backend en mensajes para el
+usuario, `ui.js` reúne toasts, skeletons y estados, y `sesion.js` gestiona el perfil activo.
+
+**Revisión:**
+- ✅ Separación estricta: sin Java ni SQL en las vistas; solo `api.js` invoca `fetch`.
+- ✅ Seguridad: ningún `innerHTML`/`outerHTML`; todo el contenido de la API se inserta con
+  `textContent` o creando nodos del DOM, para evitar XSS.
+- ✅ Los 7 módulos pasan `node --check` y todas las rutas de API usadas existen en los recursos Java.
+- ✅ Favicon propio, para que no aparezca un 404 en la consola.
+
+**Verificación:**
+- `mvn test` → 173 tests, 0 fallos.
+- Docker: los 13 recursos estáticos responden 200 con el Content-Type correcto, y las 5 rutas de API
+  usadas, 200.
+- Prueba manual en el navegador: [perfil persistente, búsqueda y estado vacío, continuar viendo,
+  reanudación, error claro con la BD caída y reintento, diseño responsive, consola sin errores.]
+
+**Commit:** `feat(frontend): selección de perfil, catálogo, detalle y reproductor con progreso`
