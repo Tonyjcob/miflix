@@ -247,15 +247,6 @@ construcción de la imagen porque Docker Desktop no estaba arrancado: solo valid
 - Fijar la versión de la imagen de Adminer y usar `MYSQL_PWD` en el healthcheck de `db`.
 
 **Verificación:**
-- [`docker compose up --build -d` → los tres contenedores en marcha y `miflix-db` healthy.]
-- [`GET http://localhost:8080/api/health` → `{"estado":"UP","baseDatos":"UP"}`.]
-- [`GET http://localhost:8080/api/no-existe` → 404 en JSON (confirma la corrección del mapper de la Fase 3A).]
-- [`docker compose stop db` → `/api/health` devuelve 503 con `"baseDatos":"DOWN"`; tras
-  `docker compose start db`, vuelve a UP sin reiniciar la app (el pool de Hikari se recupera solo).]
-
-**Commit:** `feat(docker): Dockerfile multi-stage y servicio app en docker-compose`
-
-**Verificación:**
 - `mvn test` → 42 tests, 0 fallos (DAO con MySQL real vía Testcontainers, servicio con Mockito y
   traductor).
 - Verificación en Docker ejecutada por Junie con tabla esperado/obtenido: listar 200, buscar 200/404,
@@ -269,3 +260,4 @@ construcción de la imagen porque Docker Desktop no estaba arrancado: solo valid
   se volvió a verificar.
 
 - `fix(config): driver JDBC explícito para Tomcat, pool sin conexión forzada y errores de Tomcat ocultos`
+
