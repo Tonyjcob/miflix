@@ -25,6 +25,39 @@ class SQLExceptionTraductorTest {
     }
 
     @Test
+    void traducir_conRestriccionTituloAnio_devuelveMensajeDeTituloDuplicado() {
+        SQLException sqlException = new SQLException("uq_pelicula_titulo_anio", "23000", 1062);
+
+        ClaveDuplicadaException traducida = assertInstanceOf(ClaveDuplicadaException.class,
+                SQLExceptionTraductor.traducir(sqlException, "película"));
+
+        assertEquals("Ya existe una película con el mismo título y año.", traducida.getMessage());
+        assertSame(sqlException, traducida.getCause());
+    }
+
+    @Test
+    void traducir_conRestriccionRutaArchivo_devuelveMensajeDeRutaDuplicada() {
+        SQLException sqlException = new SQLException("uq_pelicula_ruta_archivo", "23000", 1062);
+
+        ClaveDuplicadaException traducida = assertInstanceOf(ClaveDuplicadaException.class,
+                SQLExceptionTraductor.traducir(sqlException, "película"));
+
+        assertEquals("Ya existe una película con esa ruta de archivo.", traducida.getMessage());
+        assertSame(sqlException, traducida.getCause());
+    }
+
+    @Test
+    void traducir_conDuplicadoSinRestriccionReconocida_usaMensajeGenerico() {
+        SQLException sqlException = new SQLException("uq_pelicula_otra", "23000", 1062);
+
+        ClaveDuplicadaException traducida = assertInstanceOf(ClaveDuplicadaException.class,
+                SQLExceptionTraductor.traducir(sqlException, "película"));
+
+        assertEquals("Ya existe un/a película con esos datos", traducida.getMessage());
+        assertSame(sqlException, traducida.getCause());
+    }
+
+    @Test
     void traducir_conError1451_devuelveIntegridadReferencialPorDependencias() {
         SQLException sqlException = excepcion(1451);
 

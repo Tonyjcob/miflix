@@ -1,0 +1,232 @@
+### Listar películas
+GET http://localhost:8080/api/peliculas
+Accept: application/json
+
+### Buscar por título sin distinguir mayúsculas
+GET http://localhost:8080/api/peliculas?q=bUnNy
+Accept: application/json
+
+### Buscar bunny para verificar el filtro solicitado
+GET http://localhost:8080/api/peliculas?q=bunny
+Accept: application/json
+
+### Filtrar por género
+GET http://localhost:8080/api/peliculas?generoId=1
+Accept: application/json
+
+### Filtrar por director
+GET http://localhost:8080/api/peliculas?directorId=1
+Accept: application/json
+
+### Combinar filtros
+GET http://localhost:8080/api/peliculas?q=bunny&generoId=1&directorId=1
+Accept: application/json
+
+### Buscar película existente con relaciones
+GET http://localhost:8080/api/peliculas/1
+Accept: application/json
+
+### Buscar película inexistente
+GET http://localhost:8080/api/peliculas/9999
+Accept: application/json
+
+### Crear película con título y año duplicados
+POST http://localhost:8080/api/peliculas
+Content-Type: application/json
+
+{
+  "titulo": "Big Buck Bunny",
+  "anio": 2008,
+  "duracionMin": 10,
+  "rutaArchivo": "prueba-junie.mp4",
+  "generoIds": [1]
+}
+
+### Crear película con título vacío
+POST http://localhost:8080/api/peliculas
+Content-Type: application/json
+
+{
+  "titulo": "   ",
+  "anio": 2024,
+  "duracionMin": 10,
+  "rutaArchivo": "prueba-junie.mp4",
+  "generoIds": [1]
+}
+
+### Crear película con año inferior al mínimo
+POST http://localhost:8080/api/peliculas
+Content-Type: application/json
+
+{
+  "titulo": "Año inválido HTTP",
+  "anio": 1800,
+  "duracionMin": 10,
+  "rutaArchivo": "prueba-junie.mp4",
+  "generoIds": [1]
+}
+
+### Crear película con duración inválida
+POST http://localhost:8080/api/peliculas
+Content-Type: application/json
+
+{
+  "titulo": "Duración inválida HTTP",
+  "anio": 2024,
+  "duracionMin": 0,
+  "rutaArchivo": "prueba-junie.mp4",
+  "generoIds": [1]
+}
+
+### Crear película con género inexistente
+POST http://localhost:8080/api/peliculas
+Content-Type: application/json
+
+{
+  "titulo": "Género inexistente HTTP",
+  "anio": 2024,
+  "duracionMin": 10,
+  "rutaArchivo": "prueba-junie.mp4",
+  "generoIds": [1, 999]
+}
+
+### Crear película con director inexistente
+POST http://localhost:8080/api/peliculas
+Content-Type: application/json
+
+{
+  "titulo": "Director inexistente HTTP",
+  "anio": 2024,
+  "duracionMin": 10,
+  "rutaArchivo": "prueba-junie.mp4",
+  "directorId": 999,
+  "generoIds": [1]
+}
+
+### Crear película sin géneros
+POST http://localhost:8080/api/peliculas
+Content-Type: application/json
+
+{
+  "titulo": "Sin género HTTP",
+  "anio": 2024,
+  "duracionMin": 10,
+  "rutaArchivo": "prueba-junie.mp4",
+  "generoIds": []
+}
+
+### Crear película con extensión no permitida
+POST http://localhost:8080/api/peliculas
+Content-Type: application/json
+
+{
+  "titulo": "Extensión inválida HTTP",
+  "anio": 2024,
+  "duracionMin": 10,
+  "rutaArchivo": "prueba-junie.avi",
+  "generoIds": [1]
+}
+
+### Crear película con path traversal
+POST http://localhost:8080/api/peliculas
+Content-Type: application/json
+
+{
+  "titulo": "Ruta insegura HTTP",
+  "anio": 2024,
+  "duracionMin": 10,
+  "rutaArchivo": "../x.mp4",
+  "generoIds": [1]
+}
+
+### Crear película con archivo inexistente
+POST http://localhost:8080/api/peliculas
+Content-Type: application/json
+
+{
+  "titulo": "Archivo inexistente HTTP",
+  "anio": 2024,
+  "duracionMin": 10,
+  "rutaArchivo": "archivo-inexistente.mp4",
+  "generoIds": [1]
+}
+
+### Crear película con póster inseguro
+POST http://localhost:8080/api/peliculas
+Content-Type: application/json
+
+{
+  "titulo": "Póster inseguro HTTP",
+  "anio": 2024,
+  "duracionMin": 10,
+  "rutaArchivo": "prueba-junie.mp4",
+  "rutaPoster": "../poster.jpg",
+  "generoIds": [1]
+}
+
+### Actualizar película existente
+PUT http://localhost:8080/api/peliculas/8
+Content-Type: application/json
+
+{
+  "titulo": "Sprite Fright actualizada HTTP",
+  "anio": 2021,
+  "duracionMin": 10,
+  "sinopsis": "Actualización temporal de verificación.",
+  "rutaArchivo": "prueba-junie.mp4",
+  "directorId": 8,
+  "generoIds": [1, 7]
+}
+
+### Actualizar película inexistente
+PUT http://localhost:8080/api/peliculas/9999
+Content-Type: application/json
+
+{
+  "titulo": "No existe HTTP",
+  "anio": 2024,
+  "duracionMin": 10,
+  "rutaArchivo": "prueba-junie.mp4",
+  "generoIds": [1]
+}
+
+### Eliminar película inexistente
+DELETE http://localhost:8080/api/peliculas/9999
+
+### Eliminar película de prueba para verificar cascada
+DELETE http://localhost:8080/api/peliculas/8
+
+### Confirmar película eliminada
+GET http://localhost:8080/api/peliculas/8
+Accept: application/json
+
+### Confirmar respuesta de géneros tras el borrado en cascada
+GET http://localhost:8080/api/generos
+Accept: application/json
+
+### Crear película
+POST http://localhost:8080/api/peliculas
+Content-Type: application/json
+
+{
+  "titulo": "Película HTTP Junie",
+  "anio": 2024,
+  "duracionMin": 10,
+  "sinopsis": "Película temporal de verificación.",
+  "rutaArchivo": "prueba-junie.mp4",
+  "rutaPoster": "posters/prueba-junie.jpg",
+  "directorId": 1,
+  "generoIds": [1, 2]
+}
+
+### Crear película con ruta duplicada
+POST http://localhost:8080/api/peliculas
+Content-Type: application/json
+
+{
+  "titulo": "Otra película HTTP",
+  "anio": 2025,
+  "duracionMin": 10,
+  "rutaArchivo": "prueba-junie.mp4",
+  "generoIds": [1]
+}
