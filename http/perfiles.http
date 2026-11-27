@@ -1,0 +1,107 @@
+### Listar perfiles
+GET http://localhost:8080/api/perfiles
+Accept: application/json
+
+### Buscar perfil existente
+GET http://localhost:8080/api/perfiles/1
+Accept: application/json
+
+### Buscar perfil inexistente
+GET http://localhost:8080/api/perfiles/9999
+Accept: application/json
+
+### Crear perfil para probar la creación
+POST http://localhost:8080/api/perfiles
+Content-Type: application/json
+
+{
+  "nombre": "Perfil Temporal HTTP",
+  "avatar": "",
+  "esInfantil": null
+}
+
+### Crear perfil duplicado
+POST http://localhost:8080/api/perfiles
+Content-Type: application/json
+
+{
+  "nombre": "Antonio",
+  "avatar": null,
+  "esInfantil": false
+}
+
+### Crear perfil con nombre vacío
+POST http://localhost:8080/api/perfiles
+Content-Type: application/json
+
+{
+  "nombre": "   ",
+  "avatar": null,
+  "esInfantil": false
+}
+
+### Actualizar perfil
+PUT http://localhost:8080/api/perfiles/2
+Content-Type: application/json
+
+{
+  "nombre": "Invitado HTTP",
+  "avatar": "avatares/azul.png",
+  "esInfantil": false
+}
+
+### Restaurar nombre del perfil
+PUT http://localhost:8080/api/perfiles/2
+Content-Type: application/json
+
+{
+  "nombre": "Invitado",
+  "avatar": "avatares/azul.png",
+  "esInfantil": false
+}
+
+### Actualizar perfil inexistente
+PUT http://localhost:8080/api/perfiles/9999
+Content-Type: application/json
+
+{
+  "nombre": "Perfil Inexistente",
+  "avatar": null,
+  "esInfantil": false
+}
+
+### Borrar perfil temporal para recuperar el total inicial de tres
+DELETE http://localhost:8080/api/perfiles/4
+
+### Borrar perfil inexistente
+DELETE http://localhost:8080/api/perfiles/9999
+
+### Crear el cuarto perfil
+POST http://localhost:8080/api/perfiles
+Content-Type: application/json
+
+{
+  "nombre": "Perfil Extra Uno",
+  "avatar": null,
+  "esInfantil": false
+}
+
+### Crear el quinto perfil
+POST http://localhost:8080/api/perfiles
+Content-Type: application/json
+
+{
+  "nombre": "Perfil Extra Dos",
+  "avatar": "avatar-dos.png",
+  "esInfantil": true
+}
+
+### Rechazar el sexto perfil
+POST http://localhost:8080/api/perfiles
+Content-Type: application/json
+
+{
+  "nombre": "Perfil Extra Tres",
+  "avatar": null,
+  "esInfantil": false
+}
