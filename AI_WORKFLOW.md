@@ -261,3 +261,68 @@ construcción de la imagen porque Docker Desktop no estaba arrancado: solo valid
 
 - `fix(config): driver JDBC explícito para Tomcat, pool sin conexión forzada y errores de Tomcat ocultos`
 
+---
+
+### Fase 5 · CRUD de Director y Perfil — 27/11/2026
+
+**Prompt dado a Junie:**
+
+<details>
+<summary>Ver prompt completo</summary>
+
+> Tarea (Fase 5): CRUD completo de Director y de Perfil usando EXACTAMENTE la misma estructura y
+> patrones que Género (modelo, proyección, DTOs, mapper, DAO con SQLExceptionTraductor, servicio,
+> recurso, tests y .http).
+> - Director: nombre obligatorio (2–120, trim), nacionalidad opcional (blanco → NULL, máx. 60).
+    >   Eliminar SÍ está permitido aunque tenga películas, porque la FK tiene ON DELETE SET NULL;
+    >   NO copiar la regla de Género que bloquea el borrado.
+> - Perfil: nombre obligatorio (2–40), avatar opcional, esInfantil nulo → false. Máximo 5 perfiles
+    >   como constante del servicio, comprobado antes de insertar (6.º → 409). Eliminar borra su progreso
+    >   en cascada.
+> - Tests DAO con Testcontainers y de servicio con Mockito, incluyendo los efectos de SET NULL y CASCADE.
+> - Verificación obligatoria: mvn test, despliegue en Docker, todas las peticiones .http y casos
+    >   adicionales, tabla esperado/obtenido y limpieza final de la BD.
+
+</details>
+
+**Qué generó Junie:**
+- **Director:** modelo, proyección `DirectorResumen` (con el recuento de películas), DTOs, mapper,
+  `DirectorDAO` / `JdbcDirectorDAO`, servicio, `DirectorResource`, tests y `http/directores.http`.
+- **Perfil:** modelo, DTOs, mapper, `PerfilDAO` / `JdbcPerfilDAO`, servicio, `PerfilResource`, tests
+  y `http/perfiles.http`. No crea proyección porque no tiene datos agregados.
+- Registro de ambos recursos y sus dependencias en `MiflixApplication`. No modificó Género, el esquema
+  ni la infraestructura.
+
+**Decisiones de diseño:**
+- **Borrado de Director distinto al de Género**, por coherencia con el modelo de datos: la FK
+  `pelicula.director_id` es `ON DELETE SET NULL`, así que la BD permite el borrado y las películas
+  quedan "sin director". En Género la FK de la tabla intermedia es `RESTRICT` y el servicio lo
+  bloquea con 409. La regla de negocio refleja la restricción de integridad definida en `init.sql`.
+- **Límite de 5 perfiles** como constante del servicio, comprobado antes de insertar.
+  Limitación conocida: dos peticiones simultáneas podrían superar el límite (comprobar e insertar no
+  son atómicos). Se acepta porque es una aplicación personal de un solo usuario.
+
+**Revisión:**
+- ✅ `DELETE /api/directores/1` (con películas) → 204: el agente no copió la regla de bloqueo de
+  Género, que era el riesgo principal de reutilizar la plantilla.
+- ✅ El test de DAO confirma que, tras borrar el director 1, "Big Buck Bunny" queda con
+  `director_id` NULL, y que al borrar el perfil 1 se eliminan sus registros de progreso.
+- ✅ Sin concatenación de valores en SQL en los nuevos DAO.
+- ✅ `fechaCreacion` se serializa en ISO-8601 (configuración de Jackson de la Fase 3A).
+- 📝 Durante la verificación, el agente tuvo un problema con el escape de comillas del JSON en
+  PowerShell; lo identificó y repitió las pruebas con otro cliente HTTP.
+
+**Correcciones manuales:**
+- Mensajes de commit ajustados al formato del proyecto, con ámbito (`feat(directores)`,
+  `feat(perfiles)`), y separados en dos commits atómicos, uno por entidad.
+
+**Verificación:**
+- `mvn test` → **103 tests, 0 fallos**.
+- Verificación en Docker con 27 peticiones (CRUD completo de ambas entidades, validación 400,
+  duplicados 409, inexistentes 404, límite del 6.º perfil 409 y borrado de un director con películas
+    204) → **todas OK**.
+- BD restaurada al estado inicial (`docker compose down -v`).
+
+**Commits:**
+- `feat(directores): CRUD de directores con DAO JDBC, servicio, API REST y tests`
+- `feat(perfiles): CRUD de perfiles con límite de 5 y tests`
