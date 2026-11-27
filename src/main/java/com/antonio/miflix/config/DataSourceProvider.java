@@ -17,18 +17,24 @@ public final class DataSourceProvider {
                 actual = dataSource;
                 if (actual == null || actual.isClosed()) {
                     AppConfig configuracion = new AppConfig();
-                    HikariConfig configuracionPool = new HikariConfig();
-                    configuracionPool.setJdbcUrl(configuracion.getDbUrl());
-                    configuracionPool.setUsername(configuracion.getDbUser());
-                    configuracionPool.setPassword(configuracion.getDbPassword());
-                    configuracionPool.setMaximumPoolSize(10);
-                    configuracionPool.setPoolName("miflix-pool");
-                    actual = new HikariDataSource(configuracionPool);
+                    actual = new HikariDataSource(crearConfiguracionPool(configuracion));
                     dataSource = actual;
                 }
             }
         }
         return actual;
+    }
+
+    static HikariConfig crearConfiguracionPool(AppConfig configuracion) {
+        HikariConfig configuracionPool = new HikariConfig();
+        configuracionPool.setJdbcUrl(configuracion.getDbUrl());
+        configuracionPool.setUsername(configuracion.getDbUser());
+        configuracionPool.setPassword(configuracion.getDbPassword());
+        configuracionPool.setDriverClassName("com.mysql.cj.jdbc.Driver");
+        configuracionPool.setInitializationFailTimeout(-1);
+        configuracionPool.setMaximumPoolSize(10);
+        configuracionPool.setPoolName("miflix-pool");
+        return configuracionPool;
     }
 
     public static void cerrar() {

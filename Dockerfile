@@ -11,5 +11,6 @@ RUN mvn -B package -DskipTests
 # Despliega la aplicación en Tomcat 10.1 con Java 21.
 FROM tomcat:10.1-jre21-temurin
 RUN rm -rf /usr/local/tomcat/webapps/*
+COPY tomcat/server.xml /usr/local/tomcat/conf/server.xml
 COPY --from=build /app/target/miflix.war /usr/local/tomcat/webapps/ROOT.war
 EXPOSE 8080
