@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#10171b">
+    <title>MiFlix — Reproductor</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/css/estilos.css">
+    <script type="module" src="/js/reproductor.js"></script>
+</head>
+<body class="player-page">
+<main class="player-main">
+    <header class="player-header">
+        <button id="back-to-detail" class="back-link" type="button">
+            <span aria-hidden="true">←</span> Volver al detalle
+        </button>
+        <a class="brand" href="/catalogo.html" aria-label="MiFlix, catálogo">
+            <span class="brand-mark" aria-hidden="true">M</span>
+            <span>MiFlix</span>
+        </a>
+        <p id="player-title" class="player-title">Reproduciendo</p>
+    </header>
+    <section class="video-stage" aria-label="Reproductor de vídeo">
+        <video id="movie-video" controls playsinline preload="metadata" aria-label="Reproductor de película"></video>
+        <p id="player-error" class="player-error" role="alert" hidden></p>
+    </section>
+    <div id="toasts" class="toast-region" aria-live="polite" aria-atomic="true"></div>
+</main>
+</body>
+</html>

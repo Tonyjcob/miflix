@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#10171b">
+    <title>MiFlix — Catálogo</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/css/estilos.css">
+    <script type="module" src="/js/catalogo.js"></script>
+</head>
+<body>
+<header class="site-header">
+    <a class="brand" href="/catalogo.html" aria-label="MiFlix, catálogo">
+        <span class="brand-mark" aria-hidden="true">M</span>
+        <span>MiFlix</span>
+    </a>
+    <form id="search-form" class="search-form" role="search">
+        <label class="visually-hidden" for="search-input">Buscar películas por título</label>
+        <span class="search-symbol" aria-hidden="true">⌕</span>
+        <input id="search-input" name="q" type="search" placeholder="Buscar una película" autocomplete="off">
+    </form>
+    <label class="genre-picker">
+        <span class="visually-hidden">Filtrar por género</span>
+        <select id="genre-select" aria-label="Filtrar por género">
+            <option value="">Todos los géneros</option>
+        </select>
+    </label>
+    <nav class="header-actions" aria-label="Navegación principal">
+        <a class="admin-link" href="/admin.html">Administrar</a>
+        <a id="profile-link" class="profile-chip" href="/index.html" aria-label="Cambiar perfil">
+            <span id="profile-avatar" class="avatar avatar-small" aria-hidden="true"></span>
+            <span id="profile-name">Perfil</span>
+        </a>
+    </nav>
+</header>
+
+<main class="catalog-main">
+    <section class="catalog-welcome" aria-labelledby="catalog-heading">
+        <p class="welcome-copy">Noche de película</p>
+        <h1 id="catalog-heading">Tu próxima historia<br>empieza aquí.</h1>
+        <p class="muted-copy">Una colección hecha para quedarse en casa.</p>
+    </section>
+    <section id="continue-section" class="continue-section" aria-labelledby="continue-heading" hidden>
+        <div class="section-heading">
+            <div>
+                <p class="section-kicker">A un toque de distancia</p>
+                <h2 id="continue-heading">Continuar viendo</h2>
+            </div>
+        </div>
+        <div id="continue-list" class="poster-row"></div>
+    </section>
+    <section id="catalog-content" class="catalog-content" aria-label="Películas del catálogo" aria-busy="true"></section>
+</main>
+
+<div id="toasts" class="toast-region" aria-live="polite" aria-atomic="true"></div>
+</body>
+</html>
