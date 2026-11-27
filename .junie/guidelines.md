@@ -77,7 +77,6 @@ Reglas:
 - No se puede borrar un género que tenga películas asociadas.
 - Máximo 5 perfiles. Nombre de perfil único.
 - Progreso: si `segundo_actual` ≥ 90 % de la duración → `completada = true`.
-- Los perfiles infantiles solo ven películas de géneros permitidos (Animación, Comedia, Fantasía).
 
 ## 7. Excepciones y códigos HTTP
 
