@@ -530,3 +530,47 @@ para elegir el archivo de vídeo de un desplegable en lugar de escribir la ruta.
   borrado, límite de perfiles, sin doble envío, diseño en móvil y consola sin errores.]
 
 **Commit:** `feat(admin): panel de administración con CRUD de las cuatro entidades y selector de vídeos`
+
+---
+
+### Fase 9 · Auditoría de código con Junie y correcciones — 27/11/2026
+
+**Prompt 9A (auditoría de solo lectura):** se pidió a Junie revisar el proyecto completo, SIN
+modificar archivos, contra 11 criterios: inyección SQL, gestión de recursos JDBC, transacciones,
+arquitectura por capas y DTOs, configuración externalizada, códigos HTTP, imports, seguridad del
+frontend (XSS), cobertura de tests, Docker y código muerto. Formato: tabla con archivo:línea,
+gravedad y corrección propuesta.
+
+**Resultado de la auditoría:** 10 hallazgos (1 ALTA, 5 MEDIA, 4 BAJA). Puntos fuertes confirmados:
+- Sin inyección SQL: el SQL dinámico de los filtros solo concatena fragmentos constantes y `?`.
+- Todos los recursos JDBC en try-with-resources.
+- `GestorTransacciones` conserva la excepción original con `addSuppressed` si el propio rollback
+  falla. Esto se había dejado pendiente de revisar en la Fase 6.
+- Ninguna entidad expuesta en la API, sin dependencias circulares, sin credenciales en el código y
+  sin `innerHTML` en el frontend.
+
+**Triaje (decisión del alumno):**
+
+| Nº | Hallazgo | Gravedad | Decisión |
+|---|---|---|---|
+| 1 | Tomcat se ejecuta como root (UID 0) | ALTA | ✅ Corregido: usuario sin privilegios |
+| 2 | Imágenes sin versión fijada | MEDIA | ✅ Parcial: fijada la de Adminer, la única sin etiqueta. Maven, Tomcat y MySQL ya fijan versión menor |
+| 3 | Contraseña del healthcheck en la línea de comandos | MEDIA | ✅ Corregido: `MYSQL_PWD` |
+| 4 | Desbordamiento de `long` en `ParserRango` | MEDIA | ❌ Aceptado: solo con rangos de más de 9 EB, imposibles en la práctica |
+| 5 | Respuestas 503/416 sin `ErrorDTO` | MEDIA | ❌ Aceptado: el 503 de `/api/health` es un estado de servicio, no un error de la API; su formato `SaludDTO` es intencionado |
+| 6 | Sin test del fallo del propio rollback | MEDIA | ✅ Corregido: nuevo test con `getSuppressed()` |
+| 7 | Sin tests de contrato HTTP de los recursos | BAJA | ❌ Aceptado: el contrato HTTP se verificó en cada fase con tablas esperado/obtenido en Docker |
+| 8 | Sin test de enlaces simbólicos en `AlmacenMedios` | BAJA | ❌ Aceptado: la implementación ya comprueba la ruta real |
+| 9 | Sin tests automatizados de JavaScript | BAJA | ❌ Aceptado: se sustituyen por la checklist manual documentada en las Fases 8A y 8B |
+| 10 | `tienePeliculas()` sin uso | BAJA | ✅ Eliminado |
+
+**Prompt 9B (correcciones):** se pidió aplicar solo los puntos 1, 2, 3, 6 y 10, con verificación
+de que el contenedor corre con un UID distinto de 0 y de que sigue pudiendo leer los vídeos (Range → 206).
+
+**Verificación:** `mvn test` → **176 tests, 0 fallos**; `docker exec miflix-app id` → `uid=999(tomcat)`;
+db healthy; `/api/health` UP; `GET /api/stream/1` con `Range: bytes=0-99` → 206 (el usuario sin
+privilegios puede leer los vídeos montados en `/media`).
+
+**Lección aprendida:** pedir la auditoría en modo de solo lectura y separar el informe de las
+correcciones permite priorizar con criterio (gravedad frente a coste) en lugar de aplicar todos los
+cambios que propone el agente.

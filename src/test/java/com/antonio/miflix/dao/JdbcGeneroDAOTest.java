@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -135,9 +134,9 @@ class JdbcGeneroDAOTest {
     }
 
     @Test
-    void tienePeliculas_conGeneroVacio_devuelveFalso() {
-        assertFalse(generoDAO.tienePeliculas(8));
-        assertNotEquals(0, generoDAO.contarPeliculas(1));
+    void contarPeliculas_conGeneroVacioYAsociado_devuelveTotales() {
+        assertEquals(0, generoDAO.contarPeliculas(8));
+        assertEquals(7, generoDAO.contarPeliculas(1));
     }
 
     private static void cargarScriptInicial() throws IOException, SQLException {

@@ -18,7 +18,5 @@ public interface GeneroDAO {
 
     boolean eliminar(int id);
 
-    boolean tienePeliculas(int id);
-
     int contarPeliculas(int id);
 }

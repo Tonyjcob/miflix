@@ -9,7 +9,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -49,6 +51,25 @@ class GestorTransaccionesTest {
 
         verify(conexion).setAutoCommit(false);
         verify(conexion, never()).commit();
+        verify(conexion).rollback();
+        verify(conexion).setAutoCommit(true);
+        verify(conexion).close();
+    }
+
+    @Test
+    void ejecutar_conFalloDeRollback_conservaExcepcionOriginalYcierraConexion() throws SQLException {
+        IllegalStateException falloOriginal = new IllegalStateException("fallo de operación");
+        SQLException falloRollback = new SQLException("fallo de rollback");
+        doThrow(falloRollback).when(conexion).rollback();
+
+        IllegalStateException excepcion = assertThrows(IllegalStateException.class,
+                () -> gestorTransacciones.ejecutar(connection -> {
+                    throw falloOriginal;
+                }));
+
+        assertSame(falloOriginal, excepcion);
+        assertEquals(1, excepcion.getSuppressed().length);
+        assertSame(falloRollback, excepcion.getSuppressed()[0]);
         verify(conexion).rollback();
         verify(conexion).setAutoCommit(true);
         verify(conexion).close();

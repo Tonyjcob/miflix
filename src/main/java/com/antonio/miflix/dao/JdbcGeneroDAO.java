@@ -105,11 +105,6 @@ public class JdbcGeneroDAO implements GeneroDAO {
     }
 
     @Override
-    public boolean tienePeliculas(int id) {
-        return contarPeliculas(id) > 0;
-    }
-
-    @Override
     public int contarPeliculas(int id) {
         String sql = "SELECT COUNT(*) FROM pelicula_genero WHERE genero_id = ?";
         try (Connection conexion = dataSource.getConnection();
