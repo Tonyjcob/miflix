@@ -255,3 +255,17 @@ construcción de la imagen porque Docker Desktop no estaba arrancado: solo valid
 
 **Commit:** `feat(docker): Dockerfile multi-stage y servicio app en docker-compose`
 
+**Verificación:**
+- `mvn test` → 42 tests, 0 fallos (DAO con MySQL real vía Testcontainers, servicio con Mockito y
+  traductor).
+- Verificación en Docker ejecutada por Junie con tabla esperado/obtenido: listar 200, buscar 200/404,
+  crear 201/400/409, actualizar 200/409, eliminar Documental 204, eliminar Animación 409, ruta
+  inexistente 404 en JSON, error de Tomcat sin stacktrace → todo OK.
+- Caso límite: crear "animacion" devuelve 409, porque la intercalación `utf8mb4_0900_ai_ci` no
+  distingue tildes ni mayúsculas.
+- ⚠️ La verificación detectó un fallo: `DELETE /api/generos/7` (Terror) devolvía "tiene 1 películas
+  asociadas". La corrección de concordancia, identificada en la revisión de código, no se había llegado
+  a aplicar. El agente lo reportó sin modificar código, como pedía el prompt; se corrigió manualmente y
+  se volvió a verificar.
+
+- `fix(config): driver JDBC explícito para Tomcat, pool sin conexión forzada y errores de Tomcat ocultos`
