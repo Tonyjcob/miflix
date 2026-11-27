@@ -326,3 +326,76 @@ construcción de la imagen porque Docker Desktop no estaba arrancado: solo valid
 **Commits:**
 - `feat(directores): CRUD de directores con DAO JDBC, servicio, API REST y tests`
 - `feat(perfiles): CRUD de perfiles con límite de 5 y tests`
+
+---
+
+### Fase 6 · CRUD de Película con transacciones y relación N:M — 27/11/2026
+
+**Prompt dado a Junie:**
+
+<details>
+<summary>Ver prompt completo</summary>
+
+> Tarea (Fase 6): CRUD completo de Película. Antes de escribir código, explícame tu plan y espera mi OK.
+> - Transacciones en la capa de servicio con un GestorTransacciones (autoCommit false, commit,
+    >   rollback ante excepción, restaurar autoCommit y cerrar la conexión). Los métodos de escritura de
+    >   los DAO reciben la Connection.
+> - PeliculaDTO con director {id, nombre} y géneros [{id, nombre}]; PeliculaRequestDTO con directorId
+    >   y generoIds.
+> - Validaciones: título 1–200, año 1888–año actual, duración 1–999, sinopsis ≤ 2000, archivo
+    >   .mp4/.webm relativo, sin path traversal y existente en MEDIA_PATH (interfaz AlmacenMedios), al
+    >   menos 1 género sin duplicados, director y géneros existentes.
+> - Filtros q / generoId / directorId combinables con SQL dinámico solo con parámetros "?"; carga de
+    >   géneros sin N+1.
+> - Tests: DAO con Testcontainers, test de integración del ROLLBACK con MySQL real,
+    >   GestorTransaccionesTest, servicio con Mockito.
+> - Verificación obligatoria en Docker con tabla esperado/obtenido, incluida la comprobación del rollback.
+
+</details>
+
+**Fase de planificación (modo plan de Junie):**
+- El agente analizó el código existente y, antes de implementar, **consultó una decisión de
+  arquitectura**: un DAO único para película y géneros (su recomendación) o un `PeliculaGeneroDAO`
+  separado.
+- **Decisión:** DAO separado. Cada DAO corresponde a una tabla, y queda justificado que la
+  transacción se coordine en el servicio: la operación abarca dos DAO que comparten la misma
+  `Connection`.
+- Al aprobar, se añadieron instrucciones: inserción de géneros con `addBatch`/`executeBatch`, lista
+  de ids vacía sin ejecutar SQL (un `IN ()` vacío es SQL inválido), y comprobación previa de
+  director/géneros antes de abrir la transacción para dar mensajes claros.
+- Se aprobó el plan con dos condiciones: distinguir los duplicados solo por el **nombre de la
+  restricción** definido en `init.sql` (`uq_pelicula_titulo_anio`, `uq_pelicula_ruta_archivo`), nunca
+  por el texto del error, con mensaje genérico si no se reconoce; y usar `@TempDir` en los tests de
+  medios para no depender de archivos reales.
+- El plan quedó guardado en `.junie/plans/crud-pelicula-transaccional.md`.
+
+**Qué generó Junie:**
+- Modelo `Pelicula`, proyección `PeliculaResumen`, DTOs (incluidos `DirectorPeliculaDTO` y
+  `GeneroPeliculaDTO` para las referencias anidadas) y mapper.
+- `PeliculaDAO` / `JdbcPeliculaDAO` (lecturas con filtros y escrituras con `Connection`) y
+  `PeliculaGeneroDAO` / `JdbcPeliculaGeneroDAO` (batch, borrado y carga agregada).
+- `GestorTransacciones` genérico.
+- `AlmacenMedios` / `AlmacenMediosSistemaArchivos`: normaliza las rutas y verifica que no salen de
+  `MEDIA_PATH`.
+- `PeliculaService` / `PeliculaServiceImpl` y `PeliculaResource`.
+- Ampliación de `SQLExceptionTraductor` para distinguir los dos tipos de duplicado.
+
+**Revisión:**
+- ✅ Rollback verificado con MySQL real, tanto en test de integración (`PeliculaTransaccionTest`) como
+  en Docker: crear con un género inexistente devuelve 400 y el número de películas no cambia.
+- ✅ Sin problema N+1: los géneros de todas las películas listadas se cargan en una sola consulta.
+- ✅ Protección contra path traversal en vídeo y póster (`../x.mp4` → 400).
+- ✅ Duplicados distinguidos por el nombre de la restricción, con mensajes claros para título/año y
+  para ruta de archivo.
+- ✅ `GestorTransaccionesTest` verifica con Mockito commit en éxito, rollback ante excepción,
+  restauración de `autoCommit` (para no devolver conexiones "contaminadas" al pool) y cierre de la
+  conexión incluso cuando falla. La revisión completa del código se realizará en la auditoría final.
+- 
+**Verificación:**
+- `mvn test` → **149 tests, 0 fallos**.
+- Docker: **32 comprobaciones HTTP OK**: filtros (incluido sin distinguir mayúsculas y combinados),
+  CRUD completo, 7 validaciones distintas → 400, director/género inexistentes → 400, duplicados de
+  título/año y de archivo → 409, rollback sin efectos y recuento de géneros actualizado al borrar.
+- Archivo temporal de prueba eliminado y BD restaurada a los datos semilla.
+
+**Commit:** `feat(peliculas): CRUD de películas con transacciones, relación N:M con géneros y validación de archivos`
