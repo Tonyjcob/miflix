@@ -4,10 +4,14 @@ import com.antonio.miflix.service.AlmacenMedios;
 import jakarta.inject.Inject;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.util.Optional;
+import java.util.Locale;
+import java.util.List;
+import java.util.stream.Stream;
 
 public class AlmacenMediosSistemaArchivos implements AlmacenMedios {
     private final Path raizMedios;
@@ -48,6 +52,31 @@ public class AlmacenMediosSistemaArchivos implements AlmacenMedios {
         } catch (IOException excepcion) {
             return Optional.empty();
         }
+    }
+
+    @Override
+    public List<String> listarVideos() {
+        if (!Files.isDirectory(raizMedios)) {
+            return List.of();
+        }
+        try (Stream<Path> rutas = Files.walk(raizMedios)) {
+            return rutas
+                    .filter(Files::isRegularFile)
+                    .map(raizMedios::relativize)
+                    .map(Path::toString)
+                    .map(ruta -> ruta.replace('\\', '/'))
+                    .filter(this::esVideo)
+                    .filter(ruta -> resolverRutaSegura(ruta).isPresent())
+                    .sorted()
+                    .toList();
+        } catch (IOException excepcion) {
+            throw new UncheckedIOException("No se pudieron listar los vídeos de MEDIA_PATH.", excepcion);
+        }
+    }
+
+    private boolean esVideo(String ruta) {
+        String rutaMinusculas = ruta.toLowerCase(Locale.ROOT);
+        return rutaMinusculas.endsWith(".mp4") || rutaMinusculas.endsWith(".webm");
     }
 
     private Path resolverRuta(String rutaRelativa) {

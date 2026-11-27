@@ -997,3 +997,481 @@ button {
         transition-duration: 0.01ms !important;
     }
 }
+
+.admin-page {
+    background: var(--color-fondo);
+}
+
+.admin-header {
+    display: flex;
+    min-height: 4.8rem;
+    align-items: center;
+    gap: 1.25rem;
+    padding: 0.8rem max(1.25rem, calc((100vw - var(--ancho-contenido)) / 2));
+    border-bottom: 1px solid var(--color-borde);
+    background: rgb(16 23 27 / 94%);
+}
+
+.admin-header-label {
+    padding-left: 1.1rem;
+    border-left: 1px solid var(--color-borde);
+    color: var(--color-texto-suave);
+    font-size: 0.9rem;
+}
+
+.admin-header .text-link {
+    margin-left: auto;
+}
+
+.admin-main {
+    width: min(100% - 3rem, var(--ancho-contenido));
+    margin: 0 auto;
+    padding: 3.2rem 0 5rem;
+}
+
+.admin-intro {
+    padding: 0 0 2.3rem;
+    border-bottom: 1px solid var(--color-borde);
+}
+
+.admin-intro h1 {
+    max-width: 46rem;
+    margin: 0.55rem 0 0.6rem;
+    font-size: clamp(2.4rem, 5vw, 4.5rem);
+    font-weight: 720;
+    letter-spacing: -0.075em;
+    line-height: 1.02;
+}
+
+.admin-intro .muted-copy {
+    max-width: 36rem;
+    margin: 0;
+}
+
+.admin-tabs {
+    display: flex;
+    gap: 0.35rem;
+    margin-top: 1.6rem;
+    overflow-x: auto;
+    border-bottom: 1px solid var(--color-borde);
+}
+
+.admin-tab {
+    min-height: 3.25rem;
+    padding: 0.65rem 1rem;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    background: transparent;
+    color: var(--color-texto-suave);
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.admin-tab:hover,
+.admin-tab[aria-selected="true"] {
+    color: var(--color-texto);
+}
+
+.admin-tab[aria-selected="true"] {
+    border-bottom-color: var(--color-acento);
+}
+
+.admin-panel {
+    padding-top: 1.8rem;
+}
+
+.admin-section-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-bottom: 1.2rem;
+}
+
+.admin-section-heading h2 {
+    margin: 0 0 0.25rem;
+    font-size: 1.45rem;
+    letter-spacing: -0.035em;
+}
+
+.admin-section-heading .muted-copy {
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+.admin-new-button {
+    flex-shrink: 0;
+    border: 0;
+    cursor: pointer;
+}
+
+.admin-table-container {
+    min-height: 12rem;
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio-medio);
+    background: var(--color-superficie);
+    overflow: hidden;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.admin-table th {
+    padding: 0.9rem 1rem;
+    border-bottom: 1px solid var(--color-borde);
+    background: rgb(255 255 255 / 2%);
+    color: var(--color-texto-suave);
+    font-size: 0.82rem;
+    font-weight: 600;
+}
+
+.admin-table td {
+    padding: 0.95rem 1rem;
+    border-bottom: 1px solid var(--color-borde);
+    vertical-align: middle;
+}
+
+.admin-table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.admin-table tbody tr:hover {
+    background: rgb(255 255 255 / 2%);
+}
+
+.admin-row-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.table-action,
+.secondary-action,
+.danger-action {
+    min-height: 2.45rem;
+    padding: 0.45rem 0.8rem;
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio-pequeno);
+    background: transparent;
+    color: var(--color-texto);
+    cursor: pointer;
+    transition: background 150ms ease, border-color 150ms ease;
+}
+
+.table-action:hover,
+.secondary-action:hover {
+    border-color: rgb(242 241 233 / 32%);
+    background: var(--color-superficie-elevada);
+}
+
+.table-action-danger,
+.danger-action {
+    color: var(--color-error);
+}
+
+.table-action-danger:hover,
+.danger-action:hover {
+    border-color: rgb(255 154 143 / 55%);
+    background: rgb(255 154 143 / 8%);
+}
+
+.admin-table-container .empty-state,
+.admin-table-container .error-state {
+    min-height: 12rem;
+    padding: 2rem;
+}
+
+.admin-dialog {
+    width: min(42rem, calc(100vw - 2rem));
+    max-width: none;
+    max-height: min(88vh, 58rem);
+    padding: 0;
+    overflow: auto;
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio-grande);
+    background: var(--color-superficie);
+    color: var(--color-texto);
+    box-shadow: 0 24px 80px rgb(0 0 0 / 48%);
+}
+
+.admin-dialog::backdrop {
+    background: rgb(3 8 10 / 76%);
+    backdrop-filter: blur(4px);
+}
+
+.admin-dialog-form {
+    padding: clamp(1.2rem, 4vw, 2rem);
+}
+
+.admin-dialog-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+.admin-dialog-heading h2 {
+    margin: 0;
+    font-size: 1.55rem;
+    letter-spacing: -0.045em;
+}
+
+.icon-button {
+    display: grid;
+    width: 2.5rem;
+    height: 2.5rem;
+    flex-shrink: 0;
+    place-items: center;
+    border: 1px solid var(--color-borde);
+    border-radius: 50%;
+    background: transparent;
+    color: var(--color-texto-suave);
+    cursor: pointer;
+    font-size: 1.5rem;
+    line-height: 1;
+}
+
+.admin-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.admin-field {
+    display: grid;
+    min-width: 0;
+    align-content: start;
+    gap: 0.45rem;
+}
+
+.admin-field-wide {
+    grid-column: 1 / -1;
+}
+
+.admin-field > label,
+.admin-field legend {
+    color: var(--color-texto-suave);
+    font-size: 0.88rem;
+}
+
+.admin-field input:not([type="checkbox"]),
+.admin-field select,
+.admin-field textarea {
+    width: 100%;
+    min-height: 2.85rem;
+    padding: 0.65rem 0.75rem;
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio-pequeno);
+    background: var(--color-fondo);
+    color: var(--color-texto);
+}
+
+.admin-field textarea {
+    min-height: 6rem;
+    resize: vertical;
+}
+
+.admin-field select option:disabled {
+    color: var(--color-texto-suave);
+}
+
+.admin-genre-fieldset {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.admin-genre-fieldset legend {
+    margin-bottom: 0.55rem;
+}
+
+.admin-checkbox-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+    gap: 0.5rem;
+}
+
+.admin-checkbox-label {
+    display: flex;
+    min-height: 2.5rem;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.45rem 0.65rem;
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio-pequeno);
+    color: var(--color-texto);
+    cursor: pointer;
+}
+
+.admin-checkbox-label input {
+    width: 1rem;
+    height: 1rem;
+    accent-color: var(--color-acento);
+}
+
+.admin-dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.65rem;
+    margin-top: 1.5rem;
+}
+
+.admin-dialog-actions button {
+    min-width: 6rem;
+}
+
+.admin-dialog-actions .primary-action {
+    justify-content: center;
+    border: 0;
+    cursor: pointer;
+}
+
+.admin-dialog button:disabled {
+    cursor: wait;
+    opacity: 0.62;
+}
+
+.admin-form-error {
+    margin: 0 0 1rem;
+    padding: 0.7rem 0.85rem;
+    border-left: 3px solid var(--color-error);
+    background: rgb(255 154 143 / 8%);
+    color: var(--color-error);
+    line-height: 1.45;
+}
+
+.admin-delete-description {
+    margin: 0;
+    color: var(--color-texto-suave);
+    line-height: 1.6;
+}
+
+@media (max-width: 760px) {
+    .admin-header {
+        flex-wrap: wrap;
+        gap: 0.7rem 1rem;
+        padding: 0.8rem 1rem;
+    }
+
+    .admin-main {
+        width: min(100% - 2rem, var(--ancho-contenido));
+        padding-top: 2.5rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .admin-header-label {
+        padding-left: 0.8rem;
+        font-size: 0.82rem;
+    }
+
+    .admin-main {
+        width: min(100% - 1.5rem, var(--ancho-contenido));
+        padding-top: 1.8rem;
+    }
+
+    .admin-intro {
+        padding-bottom: 1.7rem;
+    }
+
+    .admin-tabs {
+        margin-top: 1rem;
+    }
+
+    .admin-tab {
+        padding-right: 0.8rem;
+        padding-left: 0.8rem;
+    }
+
+    .admin-section-heading {
+        align-items: flex-start;
+    }
+
+    .admin-table-container {
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        overflow: visible;
+    }
+
+    .admin-table,
+    .admin-table tbody {
+        display: block;
+        width: 100%;
+    }
+
+    .admin-table thead {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        clip-path: inset(50%);
+        white-space: nowrap;
+    }
+
+    .admin-table tbody tr {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.8rem 1rem;
+        margin-bottom: 0.8rem;
+        padding: 1rem;
+        border: 1px solid var(--color-borde);
+        border-radius: var(--radio-medio);
+        background: var(--color-superficie);
+    }
+
+    .admin-table td {
+        display: grid;
+        gap: 0.25rem;
+        padding: 0;
+        border: 0;
+        overflow-wrap: anywhere;
+    }
+
+    .admin-table td::before {
+        content: attr(data-label);
+        color: var(--color-texto-suave);
+        font-size: 0.76rem;
+    }
+
+    .admin-table td:first-child,
+    .admin-table .admin-actions-cell {
+        grid-column: 1 / -1;
+    }
+
+    .admin-row-actions {
+        padding-top: 0.2rem;
+    }
+
+    .admin-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-field-wide {
+        grid-column: auto;
+    }
+}
+
+@media (max-width: 390px) {
+    .admin-section-heading {
+        flex-direction: column;
+    }
+
+    .admin-new-button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .admin-dialog-actions {
+        flex-direction: column-reverse;
+    }
+
+    .admin-dialog-actions button {
+        width: 100%;
+    }
+}

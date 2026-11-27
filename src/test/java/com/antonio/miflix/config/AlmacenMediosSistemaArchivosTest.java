@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -49,5 +50,17 @@ class AlmacenMediosSistemaArchivosTest {
 
         assertFalse(almacen.esRutaSegura(mediaRoot.resolve("pelicula.mp4").toString()));
         assertFalse(almacen.esRutaSegura("C:\\videos\\pelicula.mp4"));
+    }
+
+    @Test
+    void listarVideos_conArchivosRecursivos_filtraExtensionesYDevuelveRutasRelativas() throws IOException {
+        Files.createDirectories(mediaRoot.resolve("coleccion/subcarpeta"));
+        Files.createFile(mediaRoot.resolve("coleccion/subcarpeta/pelicula.mp4"));
+        Files.createFile(mediaRoot.resolve("coleccion/clip.WEBM"));
+        Files.createFile(mediaRoot.resolve("coleccion/poster.jpg"));
+        AlmacenMediosSistemaArchivos almacen = new AlmacenMediosSistemaArchivos(mediaRoot);
+
+        assertEquals(List.of("coleccion/clip.WEBM", "coleccion/subcarpeta/pelicula.mp4"),
+                almacen.listarVideos());
     }
 }

@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#10171b">
+    <title>MiFlix — Administración</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/css/estilos.css">
+    <script type="module" src="/js/admin.js"></script>
+</head>
+<body class="admin-page">
+<header class="admin-header">
+    <a class="brand" href="/catalogo.html" aria-label="MiFlix, catálogo">
+        <span class="brand-mark" aria-hidden="true">M</span>
+        <span>MiFlix</span>
+    </a>
+    <span class="admin-header-label">Administración</span>
+    <a class="text-link" href="/catalogo.html">Volver al catálogo</a>
+</header>
+
+<main class="admin-main">
+    <section class="admin-intro" aria-labelledby="admin-heading">
+        <p class="welcome-copy">Tu videoteca, bien cuidada</p>
+        <h1 id="admin-heading">Gestiona tu colección</h1>
+        <p class="muted-copy">Películas, géneros, directores y perfiles en un mismo lugar.</p>
+    </section>
+
+    <nav class="admin-tabs" role="tablist" aria-label="Secciones de administración">
+        <button id="tab-peliculas" class="admin-tab" type="button" role="tab" aria-selected="true"
+                aria-controls="admin-panel" data-tab="peliculas">Películas</button>
+        <button id="tab-generos" class="admin-tab" type="button" role="tab" aria-selected="false"
+                aria-controls="admin-panel" data-tab="generos" tabindex="-1">Géneros</button>
+        <button id="tab-directores" class="admin-tab" type="button" role="tab" aria-selected="false"
+                aria-controls="admin-panel" data-tab="directores" tabindex="-1">Directores</button>
+        <button id="tab-perfiles" class="admin-tab" type="button" role="tab" aria-selected="false"
+                aria-controls="admin-panel" data-tab="perfiles" tabindex="-1">Perfiles</button>
+    </nav>
+
+    <section id="admin-panel" class="admin-panel" role="tabpanel" aria-labelledby="tab-peliculas"
+             aria-busy="true">
+        <div class="admin-section-heading">
+            <div>
+                <h2 id="section-title">Películas</h2>
+                <p id="section-description" class="muted-copy">Las historias de tu colección.</p>
+            </div>
+            <button id="new-record" class="primary-action admin-new-button" type="button">Nueva película</button>
+        </div>
+        <div id="table-container" class="admin-table-container" aria-live="polite"></div>
+    </section>
+</main>
+
+<dialog id="edit-dialog" class="admin-dialog" aria-labelledby="dialog-title">
+    <form id="entity-form" class="admin-dialog-form" novalidate>
+        <header class="admin-dialog-heading">
+            <h2 id="dialog-title">Nuevo registro</h2>
+            <button id="close-edit" class="icon-button" type="button" aria-label="Cerrar formulario">×</button>
+        </header>
+        <p id="form-error" class="admin-form-error" role="alert" hidden></p>
+        <div id="form-fields" class="admin-form-fields"></div>
+        <footer class="admin-dialog-actions">
+            <button id="cancel-edit" class="secondary-action" type="button">Cancelar</button>
+            <button id="save-record" class="primary-action" type="submit">Guardar</button>
+        </footer>
+    </form>
+</dialog>
+
+<dialog id="delete-dialog" class="admin-dialog admin-delete-dialog" aria-labelledby="delete-title">
+    <div class="admin-dialog-form">
+        <header class="admin-dialog-heading">
+            <h2 id="delete-title">Eliminar registro</h2>
+            <button id="close-delete" class="icon-button" type="button" aria-label="Cerrar confirmación">×</button>
+        </header>
+        <p id="delete-description" class="admin-delete-description"></p>
+        <p id="delete-error" class="admin-form-error" role="alert" hidden></p>
+        <footer class="admin-dialog-actions">
+            <button id="cancel-delete" class="secondary-action" type="button">Cancelar</button>
+            <button id="confirm-delete" class="danger-action" type="button">Eliminar</button>
+        </footer>
+    </div>
+</dialog>
+
+<div id="toasts" class="toast-region" aria-live="polite" aria-atomic="true"></div>
+</body>
+</html>

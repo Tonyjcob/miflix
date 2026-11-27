@@ -2,6 +2,7 @@ package com.antonio.miflix.config;
 
 import com.antonio.miflix.controller.DirectorResource;
 import com.antonio.miflix.controller.GeneroResource;
+import com.antonio.miflix.controller.MedioResource;
 import com.antonio.miflix.controller.PosterResource;
 import com.antonio.miflix.controller.PerfilResource;
 import com.antonio.miflix.controller.PeliculaResource;
@@ -31,6 +32,8 @@ import com.antonio.miflix.service.DirectorService;
 import com.antonio.miflix.service.DirectorServiceImpl;
 import com.antonio.miflix.service.GeneroService;
 import com.antonio.miflix.service.GeneroServiceImpl;
+import com.antonio.miflix.service.MedioService;
+import com.antonio.miflix.service.MedioServiceImpl;
 import com.antonio.miflix.service.ParserRango;
 import com.antonio.miflix.service.PosterService;
 import com.antonio.miflix.service.PosterServiceImpl;
@@ -63,6 +66,7 @@ public class MiflixApplication extends ResourceConfig {
         register(ProgresoResource.class);
         register(StreamResource.class);
         register(PosterResource.class);
+        register(MedioResource.class);
         register(ValidacionExceptionMapper.class);
         register(RecursoNoEncontradoExceptionMapper.class);
         register(ConflictoExceptionMapper.class);
@@ -91,6 +95,7 @@ public class MiflixApplication extends ResourceConfig {
                 bind(ProgresoServiceImpl.class).to(ProgresoService.class);
                 bind(StreamServiceImpl.class).to(StreamService.class);
                 bind(PosterServiceImpl.class).to(PosterService.class);
+                bind(MedioServiceImpl.class).to(MedioService.class);
             }
         });
     }
