@@ -1,8 +1,6 @@
 package com.antonio.miflix.dao;
 
-import com.antonio.miflix.exception.ClaveDuplicadaException;
 import com.antonio.miflix.exception.DataAccessException;
-import com.antonio.miflix.exception.IntegridadReferencialException;
 import com.antonio.miflix.model.Genero;
 import com.antonio.miflix.model.GeneroResumen;
 import jakarta.inject.Inject;
@@ -18,8 +16,6 @@ import java.util.List;
 import java.util.Optional;
 
 public class JdbcGeneroDAO implements GeneroDAO {
-    private static final String MENSAJE_ERROR = "No se pudo completar la operación de géneros.";
-
     private final DataSource dataSource;
 
     @Inject
@@ -44,7 +40,7 @@ public class JdbcGeneroDAO implements GeneroDAO {
             }
             return generos;
         } catch (SQLException excepcion) {
-            throw traducirSQLException(excepcion);
+            throw SQLExceptionTraductor.traducir(excepcion, "género");
         }
     }
 
@@ -61,7 +57,7 @@ public class JdbcGeneroDAO implements GeneroDAO {
                 return Optional.of(new Genero(resultado.getInt("id"), resultado.getString("nombre")));
             }
         } catch (SQLException excepcion) {
-            throw traducirSQLException(excepcion);
+            throw SQLExceptionTraductor.traducir(excepcion, "género");
         }
     }
 
@@ -74,13 +70,12 @@ public class JdbcGeneroDAO implements GeneroDAO {
             sentencia.executeUpdate();
             try (ResultSet clavesGeneradas = sentencia.getGeneratedKeys()) {
                 if (!clavesGeneradas.next()) {
-                    throw new DataAccessException("La base de datos no devolvió el id del género creado.",
-                            new SQLException("No se generó una clave para el género."));
+                    throw new DataAccessException("La base de datos no devolvió el id del género creado.", null);
                 }
                 return clavesGeneradas.getInt(1);
             }
         } catch (SQLException excepcion) {
-            throw traducirSQLException(excepcion);
+            throw SQLExceptionTraductor.traducir(excepcion, "género");
         }
     }
 
@@ -93,7 +88,7 @@ public class JdbcGeneroDAO implements GeneroDAO {
             sentencia.setInt(2, genero.getId());
             return sentencia.executeUpdate() > 0;
         } catch (SQLException excepcion) {
-            throw traducirSQLException(excepcion);
+            throw SQLExceptionTraductor.traducir(excepcion, "género");
         }
     }
 
@@ -105,7 +100,7 @@ public class JdbcGeneroDAO implements GeneroDAO {
             sentencia.setInt(1, id);
             return sentencia.executeUpdate() > 0;
         } catch (SQLException excepcion) {
-            throw traducirSQLException(excepcion);
+            throw SQLExceptionTraductor.traducir(excepcion, "género");
         }
     }
 
@@ -125,17 +120,7 @@ public class JdbcGeneroDAO implements GeneroDAO {
                 return resultado.getInt(1);
             }
         } catch (SQLException excepcion) {
-            throw traducirSQLException(excepcion);
+            throw SQLExceptionTraductor.traducir(excepcion, "género");
         }
-    }
-
-    private DataAccessException traducirSQLException(SQLException excepcion) {
-        if (excepcion.getErrorCode() == 1062) {
-            return new ClaveDuplicadaException("Ya existe un género con ese nombre.", excepcion);
-        }
-        if (excepcion.getErrorCode() == 1451) {
-            return new IntegridadReferencialException("El género tiene películas asociadas.", excepcion);
-        }
-        return new DataAccessException(MENSAJE_ERROR, excepcion);
     }
 }
