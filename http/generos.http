@@ -1,0 +1,49 @@
+### Listar géneros
+GET http://localhost:8080/api/generos
+Accept: application/json
+
+### Buscar género existente
+GET http://localhost:8080/api/generos/1
+Accept: application/json
+
+### Buscar género inexistente
+GET http://localhost:8080/api/generos/9999
+Accept: application/json
+
+### Crear género
+POST http://localhost:8080/api/generos
+Content-Type: application/json
+
+{
+  "nombre": "Aventura"
+}
+
+### Crear género duplicado
+POST http://localhost:8080/api/generos
+Content-Type: application/json
+
+{
+  "nombre": "Animación"
+}
+
+### Crear género con nombre vacío
+POST http://localhost:8080/api/generos
+Content-Type: application/json
+
+{
+  "nombre": ""
+}
+
+### Actualizar género
+PUT http://localhost:8080/api/generos/8
+Content-Type: application/json
+
+{
+  "nombre": "Documental actualizado"
+}
+
+### Borrar género sin películas
+DELETE http://localhost:8080/api/generos/8
+
+### Borrar género con películas
+DELETE http://localhost:8080/api/generos/1
