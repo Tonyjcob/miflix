@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
+import java.util.Optional;
 
 public class AlmacenMediosSistemaArchivos implements AlmacenMedios {
     private final Path raizMedios;
@@ -28,16 +29,24 @@ public class AlmacenMediosSistemaArchivos implements AlmacenMedios {
 
     @Override
     public boolean existe(String rutaRelativa) {
+        return resolverRutaSegura(rutaRelativa).isPresent();
+    }
+
+    @Override
+    public Optional<Path> resolverRutaSegura(String rutaRelativa) {
         Path ruta = resolverRuta(rutaRelativa);
         if (ruta == null) {
-            return false;
+            return Optional.empty();
         }
         try {
             Path raizReal = raizMedios.toRealPath();
             Path rutaReal = ruta.toRealPath();
-            return rutaReal.startsWith(raizReal) && Files.isRegularFile(rutaReal);
+            if (!rutaReal.startsWith(raizReal) || !Files.isRegularFile(rutaReal)) {
+                return Optional.empty();
+            }
+            return Optional.of(rutaReal);
         } catch (IOException excepcion) {
-            return false;
+            return Optional.empty();
         }
     }
 

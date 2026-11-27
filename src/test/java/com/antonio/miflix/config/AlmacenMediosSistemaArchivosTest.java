@@ -6,7 +6,9 @@ import org.junit.jupiter.api.io.TempDir;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -21,6 +23,8 @@ class AlmacenMediosSistemaArchivosTest {
 
         assertTrue(almacen.esRutaSegura("pelicula.mp4"));
         assertTrue(almacen.existe("pelicula.mp4"));
+        assertEquals(mediaRoot.resolve("pelicula.mp4").toRealPath(),
+                almacen.resolverRutaSegura("pelicula.mp4").orElseThrow());
     }
 
     @Test
@@ -28,6 +32,7 @@ class AlmacenMediosSistemaArchivosTest {
         AlmacenMediosSistemaArchivos almacen = new AlmacenMediosSistemaArchivos(mediaRoot);
 
         assertFalse(almacen.existe("no-existe.mp4"));
+        assertEquals(Optional.empty(), almacen.resolverRutaSegura("no-existe.mp4"));
     }
 
     @Test

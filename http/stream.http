@@ -1,0 +1,31 @@
+### Vídeo completo, sin cabecera Range (200)
+GET http://localhost:8080/api/stream/1
+
+### Primeros 100 bytes (206, Content-Length 100)
+GET http://localhost:8080/api/stream/1
+Range: bytes=0-99
+
+### Rango abierto desde el byte cero (206)
+GET http://localhost:8080/api/stream/1
+Range: bytes=0-
+
+### Últimos 100 bytes (206)
+GET http://localhost:8080/api/stream/1
+Range: bytes=-100
+
+### Rango fuera de límites para el archivo de prueba de 1 MiB (416)
+GET http://localhost:8080/api/stream/1
+Range: bytes=1048576-
+
+### Rango malformado ignorado y respuesta completa (200)
+GET http://localhost:8080/api/stream/1
+Range: bytes=malformado
+
+### Película inexistente (404 JSON)
+GET http://localhost:8080/api/stream/9999
+
+### Póster existente (200, image/jpeg y caché de 24 horas)
+GET http://localhost:8080/api/posters/1
+
+### Póster/película inexistente (404 JSON)
+GET http://localhost:8080/api/posters/9999

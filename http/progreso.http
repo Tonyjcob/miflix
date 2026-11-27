@@ -1,0 +1,67 @@
+### Obtener progreso inicial (sin registro, 200 y segundoActual 0)
+GET http://localhost:8080/api/perfiles/1/progreso/1
+Accept: application/json
+
+### Guardar progreso parcial de Big Buck Bunny (200)
+PUT http://localhost:8080/api/perfiles/1/progreso/1
+Content-Type: application/json
+
+{
+  "segundoActual": 150
+}
+
+### Leer progreso guardado (200)
+GET http://localhost:8080/api/perfiles/1/progreso/1
+Accept: application/json
+
+### Continuar viendo incluye Big Buck Bunny incompleta (200)
+GET http://localhost:8080/api/perfiles/1/continuar-viendo
+Accept: application/json
+
+### Guardar 95 por ciento de Big Buck Bunny (200 y completada true)
+PUT http://localhost:8080/api/perfiles/1/progreso/1
+Content-Type: application/json
+
+{
+  "segundoActual": 570
+}
+
+### Progreso completado (200)
+GET http://localhost:8080/api/perfiles/1/progreso/1
+Accept: application/json
+
+### Continuar viendo excluye Big Buck Bunny completada (200)
+GET http://localhost:8080/api/perfiles/1/continuar-viendo
+Accept: application/json
+
+### Rechazar segundo actual negativo (400)
+PUT http://localhost:8080/api/perfiles/1/progreso/1
+Content-Type: application/json
+
+{
+  "segundoActual": -1
+}
+
+### Rechazar segundo actual superior a la duración (400)
+PUT http://localhost:8080/api/perfiles/1/progreso/1
+Content-Type: application/json
+
+{
+  "segundoActual": 601
+}
+
+### Perfil inexistente (404)
+PUT http://localhost:8080/api/perfiles/9999/progreso/1
+Content-Type: application/json
+
+{
+  "segundoActual": 1
+}
+
+### Película inexistente (404)
+GET http://localhost:8080/api/perfiles/1/progreso/9999
+Accept: application/json
+
+### Perfil inexistente al consultar continuar viendo (404)
+GET http://localhost:8080/api/perfiles/9999/continuar-viendo
+Accept: application/json
