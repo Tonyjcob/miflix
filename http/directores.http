@@ -1,0 +1,62 @@
+### Listar directores
+GET http://localhost:8080/api/directores
+Accept: application/json
+
+### Buscar director existente
+GET http://localhost:8080/api/directores/1
+Accept: application/json
+
+### Buscar director inexistente
+GET http://localhost:8080/api/directores/9999
+Accept: application/json
+
+### Crear director
+POST http://localhost:8080/api/directores
+Content-Type: application/json
+
+{
+  "nombre": "Directora HTTP",
+  "nacionalidad": "España"
+}
+
+### Crear director duplicado
+POST http://localhost:8080/api/directores
+Content-Type: application/json
+
+{
+  "nombre": "Sacha Goedegebure",
+  "nacionalidad": "Países Bajos"
+}
+
+### Crear director con nombre vacío
+POST http://localhost:8080/api/directores
+Content-Type: application/json
+
+{
+  "nombre": "  ",
+  "nacionalidad": "España"
+}
+
+### Actualizar director
+PUT http://localhost:8080/api/directores/9
+Content-Type: application/json
+
+{
+  "nombre": "Director HTTP Actualizado",
+  "nacionalidad": "Chile"
+}
+
+### Actualizar director inexistente
+PUT http://localhost:8080/api/directores/9999
+Content-Type: application/json
+
+{
+  "nombre": "Director Inexistente",
+  "nacionalidad": null
+}
+
+### Borrar director sin películas
+DELETE http://localhost:8080/api/directores/9
+
+### Borrar director inexistente
+DELETE http://localhost:8080/api/directores/9999
